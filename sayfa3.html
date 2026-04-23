@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html class="light" lang="tr">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Çalışma Günlüğü | Defter Stili</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary-fixed": "#cbe8e3",
+            "surface-container-lowest": "#ffffff",
+            "primary-fixed-dim": "#b0ccc8",
+            "on-tertiary-fixed": "#2c1600",
+            "surface-container": "#f0eded",
+            "tertiary": "#7b542b",
+            "on-tertiary-fixed-variant": "#623f18",
+            "primary": "#47615d",
+            "outline": "#727877",
+            "on-error": "#ffffff",
+            "surface-dim": "#dcd9d9",
+            "on-background": "#1b1c1c",
+            "secondary": "#4f616d",
+            "on-secondary-container": "#536571",
+            "secondary-fixed": "#d2e5f3",
+            "on-primary-container": "#f5fffc",
+            "on-secondary": "#ffffff",
+            "error": "#ba1a1a",
+            "surface-variant": "#e4e2e1",
+            "surface-container-low": "#f6f3f2",
+            "on-primary": "#ffffff",
+            "on-secondary-fixed-variant": "#384955",
+            "surface-container-high": "#eae8e7",
+            "tertiary-container": "#966c41",
+            "surface-tint": "#496360",
+            "tertiary-fixed": "#ffdcbd",
+            "on-tertiary": "#ffffff",
+            "inverse-primary": "#b0ccc8",
+            "surface-bright": "#fbf9f8",
+            "surface-container-highest": "#e4e2e1",
+            "tertiary-fixed-dim": "#f0bd8b",
+            "on-primary-fixed": "#04201d",
+            "primary-container": "#5f7a76",
+            "on-tertiary-container": "#fffbff",
+            "error-container": "#ffdad6",
+            "on-secondary-fixed": "#0b1d28",
+            "on-surface": "#1b1c1c",
+            "inverse-on-surface": "#f3f0f0",
+            "outline-variant": "#c1c8c6",
+            "on-primary-fixed-variant": "#314c48",
+            "secondary-fixed-dim": "#b6c9d7",
+            "inverse-surface": "#303030",
+            "background": "#fbf9f8",
+            "on-error-container": "#93000a",
+            "on-surface-variant": "#414847",
+            "secondary-container": "#d0e2f1",
+            "surface": "#fbf9f8"
+          },
+          borderRadius: {
+            DEFAULT: "0.25rem",
+            lg: "0.5rem",
+            xl: "0.75rem",
+            full: "9999px"
+          },
+          spacing: {
+            "container-max": "1140px",
+            lg: "48px",
+            xs: "4px",
+            sm: "12px",
+            base: "8px",
+            md: "24px",
+            gutter: "24px",
+            xl: "80px"
+          },
+          fontFamily: {
+            h2: ["Newsreader", "serif"],
+            caption: ["Inter", "sans-serif"],
+            "body-lg": ["Inter", "sans-serif"],
+            h3: ["Newsreader", "serif"],
+            h1: ["Newsreader", "serif"],
+            "label-sm": ["Inter", "sans-serif"],
+            "body-md": ["Inter", "sans-serif"]
+          },
+          fontSize: {
+            h2: ["32px", { lineHeight: "1.2", fontWeight: "500" }],
+            caption: ["12px", { lineHeight: "1.4", fontWeight: "400" }],
+            "body-lg": ["18px", { lineHeight: "1.6", fontWeight: "400" }],
+            h3: ["24px", { lineHeight: "1.3", fontWeight: "500" }],
+            h1: ["40px", { lineHeight: "1.2", letterSpacing: "-0.02em", fontWeight: "500" }],
+            "label-sm": ["13px", { lineHeight: "1", letterSpacing: "0.05em", fontWeight: "600" }],
+            "body-md": ["16px", { lineHeight: "1.6", fontWeight: "400" }]
+          }
+        }
+      }
+    };
+  </script>
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+    }
+  </style>
+  <link href="./style.css" rel="stylesheet"/>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md text-body-md" data-page="style-settings">
+  <header class="bg-[#F4F4F1] dark:bg-stone-950 flex justify-between items-center w-full px-6 py-4 border-b border-stone-200 dark:border-stone-800 transition-opacity duration-200 active:opacity-70 sticky top-0 z-40">
+    <div class="flex items-center gap-4">
+      <a class="text-[#5F7A76] hover:bg-stone-100 rounded-full w-10 h-10 flex items-center justify-center transition-colors" href="./sayfa1.html" aria-label="Planlayıcıya dön">
+        <span class="material-symbols-outlined">arrow_back</span>
+      </a>
+    </div>
+    <div class="font-serif italic text-2xl tracking-tight text-[#5F7A76] text-center flex-grow">
+      Çalışma Günlüğü
+    </div>
+    <div class="w-10 h-10"></div>
+  </header>
+
+  <main class="flex-grow w-full max-w-[800px] mx-auto px-gutter py-lg pb-32 flex flex-col gap-lg">
+    <header class="mb-4">
+      <h1 class="font-h1 text-h1 text-on-surface mb-xs">Defter Stili</h1>
+      <p class="font-body-lg text-body-lg text-on-surface-variant max-w-lg">
+        Çalışma günlüğündeki sayfa dokusunu ve düzenini istediğin gibi seç.
+      </p>
+    </header>
+
+    <div class="feedback-message hidden" id="style-message" role="status" aria-live="polite"></div>
+
+    <section class="bg-surface rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-outline-variant overflow-hidden flex flex-col">
+      <button class="style-option flex items-center justify-between p-md bg-surface-container-lowest border-b border-outline-variant cursor-pointer hover:bg-surface-bright transition-colors relative group text-left" data-active="false" data-style="lined" data-style-option="lined" type="button">
+        <div class="absolute left-0 top-0 bottom-0 w-1 bg-primary" data-style-bar></div>
+        <div class="flex items-center gap-md">
+          <div aria-hidden="true" class="w-[72px] h-[96px] bg-[#fdfdfc] border border-outline-variant/60 rounded shadow-sm relative overflow-hidden flex flex-col flex-shrink-0">
+            <div class="absolute left-4 top-0 bottom-0 w-[1px] bg-error/30"></div>
+            <div class="w-full h-[1px] bg-secondary-fixed-dim/50 mt-4"></div>
+            <div class="w-full h-[1px] bg-secondary-fixed-dim/50 mt-3"></div>
+            <div class="w-full h-[1px] bg-secondary-fixed-dim/50 mt-3"></div>
+            <div class="w-full h-[1px] bg-secondary-fixed-dim/50 mt-3"></div>
+            <div class="w-full h-[1px] bg-secondary-fixed-dim/50 mt-3"></div>
+          </div>
+          <div>
+            <h3 class="font-h3 text-h3 text-on-surface mb-1">Çizgili Sayfa</h3>
+            <p class="font-body-md text-body-md text-on-surface-variant">Klasik yatay çizgiler; uzun notlar ve ders özetleri için idealdir.</p>
+          </div>
+        </div>
+        <div class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ml-4 transition-colors" data-style-indicator>
+          <span class="material-symbols-outlined text-[16px] font-bold">check</span>
+        </div>
+      </button>
+
+      <button class="style-option flex items-center justify-between p-md border-b border-outline-variant cursor-pointer hover:bg-surface-bright transition-colors group text-left" data-active="false" data-style="grid" data-style-option="grid" type="button">
+        <div class="absolute left-0 top-0 bottom-0 w-1 bg-primary" data-style-bar></div>
+        <div class="flex items-center gap-md">
+          <div aria-hidden="true" class="w-[72px] h-[96px] bg-[#fdfdfc] border border-outline-variant/60 rounded shadow-sm relative overflow-hidden flex flex-shrink-0" style="background-image: linear-gradient(to right, rgba(182, 201, 215, 0.4) 1px, transparent 1px), linear-gradient(to bottom, rgba(182, 201, 215, 0.4) 1px, transparent 1px); background-size: 8px 8px;">
+          </div>
+          <div>
+            <h3 class="font-h3 text-h3 text-on-surface mb-1">Kareli Sayfa</h3>
+            <p class="font-body-md text-body-md text-on-surface-variant">Hafif kareli doku; şema, matematik ve düzenli yerleşim için uygundur.</p>
+          </div>
+        </div>
+        <div class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ml-4 transition-colors" data-style-indicator>
+          <span class="material-symbols-outlined text-[16px] font-bold">check</span>
+        </div>
+      </button>
+
+      <button class="style-option flex items-center justify-between p-md cursor-pointer hover:bg-surface-bright transition-colors group text-left" data-active="false" data-style="plain" data-style-option="plain" type="button">
+        <div class="absolute left-0 top-0 bottom-0 w-1 bg-primary" data-style-bar></div>
+        <div class="flex items-center gap-md">
+          <div aria-hidden="true" class="w-[72px] h-[96px] bg-[#fdfdfc] border border-outline-variant/60 rounded shadow-sm flex flex-shrink-0"></div>
+          <div>
+            <h3 class="font-h3 text-h3 text-on-surface mb-1">Düz Not Modu</h3>
+            <p class="font-body-md text-body-md text-on-surface-variant">Tamamen boş bir alan; serbest not alma ve zihin haritası için uygundur.</p>
+          </div>
+        </div>
+        <div class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ml-4 transition-colors" data-style-indicator>
+          <span class="material-symbols-outlined text-[16px] font-bold">check</span>
+        </div>
+      </button>
+    </section>
+
+    <div class="flex flex-wrap justify-end gap-sm pt-sm">
+      <a class="inline-flex items-center justify-center rounded-full border border-outline-variant px-5 py-3 text-on-surface hover:bg-surface-container-low transition-colors" href="./sayfa1.html">
+        Planlayıcıya Dön
+      </a>
+      <button class="bg-primary text-on-primary font-label-sm text-label-sm px-6 py-3 rounded-full hover:bg-primary-container hover:text-on-primary-container transition-colors shadow-sm tracking-wide" id="apply-style-button" type="button">
+        Tercihi Uygula
+      </button>
+    </div>
+  </main>
+
+  <nav class="bg-[#F9F9F7] dark:bg-stone-900 border-t border-stone-200 dark:border-stone-800 shadow-[0_-4px_20px_rgba(0,0,0,0.03)] fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 h-20 pb-safe md:hidden rounded-t-lg">
+    <a class="nav-link flex flex-col items-center justify-center scale-95 active:scale-90 transition-transform w-[88px]" data-active="false" href="./sayfa1.html">
+      <span class="material-symbols-outlined mb-1">event_note</span>
+      <span class="font-serif text-[11px] uppercase tracking-wider">Planlayıcı</span>
+    </a>
+    <a class="nav-link flex flex-col items-center justify-center scale-95 active:scale-90 transition-transform w-[88px]" data-active="false" href="./sayfa2.html">
+      <span class="material-symbols-outlined mb-1">add_circle</span>
+      <span class="font-serif text-[11px] uppercase tracking-wider">Yeni Görev</span>
+    </a>
+    <a class="nav-link flex flex-col items-center justify-center scale-95 active:scale-90 transition-transform w-[88px]" data-active="true" href="./sayfa3.html">
+      <span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">settings</span>
+      <span class="font-serif text-[11px] uppercase tracking-wider">Ayarlar</span>
+    </a>
+  </nav>
+
+  <script defer src="./storage.js"></script>
+  <script defer src="./ui.js"></script>
+  <script defer src="./app.js"></script>
+</body>
+</html>

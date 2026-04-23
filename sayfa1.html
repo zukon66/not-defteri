@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html class="light" lang="tr">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Çalışma Günlüğü | Günlük Planlayıcı</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary-fixed": "#cbe8e3",
+            "surface-container-lowest": "#ffffff",
+            "primary-fixed-dim": "#b0ccc8",
+            "on-tertiary-fixed": "#2c1600",
+            "surface-container": "#f0eded",
+            "tertiary": "#7b542b",
+            "on-tertiary-fixed-variant": "#623f18",
+            "primary": "#47615d",
+            "outline": "#727877",
+            "on-error": "#ffffff",
+            "surface-dim": "#dcd9d9",
+            "on-background": "#1b1c1c",
+            "secondary": "#4f616d",
+            "on-secondary-container": "#536571",
+            "secondary-fixed": "#d2e5f3",
+            "on-primary-container": "#f5fffc",
+            "on-secondary": "#ffffff",
+            "error": "#ba1a1a",
+            "surface-variant": "#e4e2e1",
+            "surface-container-low": "#f6f3f2",
+            "on-primary": "#ffffff",
+            "on-secondary-fixed-variant": "#384955",
+            "surface-container-high": "#eae8e7",
+            "tertiary-container": "#966c41",
+            "surface-tint": "#496360",
+            "tertiary-fixed": "#ffdcbd",
+            "on-tertiary": "#ffffff",
+            "inverse-primary": "#b0ccc8",
+            "surface-bright": "#fbf9f8",
+            "surface-container-highest": "#e4e2e1",
+            "tertiary-fixed-dim": "#f0bd8b",
+            "on-primary-fixed": "#04201d",
+            "primary-container": "#5f7a76",
+            "on-tertiary-container": "#fffbff",
+            "error-container": "#ffdad6",
+            "on-secondary-fixed": "#0b1d28",
+            "on-surface": "#1b1c1c",
+            "inverse-on-surface": "#f3f0f0",
+            "outline-variant": "#c1c8c6",
+            "on-primary-fixed-variant": "#314c48",
+            "secondary-fixed-dim": "#b6c9d7",
+            "inverse-surface": "#303030",
+            "background": "#fbf9f8",
+            "on-error-container": "#93000a",
+            "on-surface-variant": "#414847",
+            "secondary-container": "#d0e2f1",
+            "surface": "#fbf9f8"
+          },
+          borderRadius: {
+            DEFAULT: "0.25rem",
+            lg: "0.5rem",
+            xl: "0.75rem",
+            full: "9999px"
+          },
+          spacing: {
+            "container-max": "1140px",
+            lg: "48px",
+            xs: "4px",
+            sm: "12px",
+            base: "8px",
+            md: "24px",
+            gutter: "24px",
+            xl: "80px"
+          },
+          fontFamily: {
+            h2: ["Newsreader", "serif"],
+            caption: ["Inter", "sans-serif"],
+            "body-lg": ["Inter", "sans-serif"],
+            h3: ["Newsreader", "serif"],
+            h1: ["Newsreader", "serif"],
+            "label-sm": ["Inter", "sans-serif"],
+            "body-md": ["Inter", "sans-serif"]
+          },
+          fontSize: {
+            h2: ["32px", { lineHeight: "1.2", fontWeight: "500" }],
+            caption: ["12px", { lineHeight: "1.4", fontWeight: "400" }],
+            "body-lg": ["18px", { lineHeight: "1.6", fontWeight: "400" }],
+            h3: ["24px", { lineHeight: "1.3", fontWeight: "500" }],
+            h1: ["40px", { lineHeight: "1.2", letterSpacing: "-0.02em", fontWeight: "500" }],
+            "label-sm": ["13px", { lineHeight: "1", letterSpacing: "0.05em", fontWeight: "600" }],
+            "body-md": ["16px", { lineHeight: "1.6", fontWeight: "400" }]
+          }
+        }
+      }
+    };
+  </script>
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+    }
+  </style>
+  <link href="./style.css" rel="stylesheet"/>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md text-body-md" data-page="planner">
+  <header class="bg-[#F4F4F1] dark:bg-stone-950 flex justify-between items-center w-full px-6 py-4 border-b border-stone-200 dark:border-stone-800 transition-opacity duration-200 active:opacity-70 sticky top-0 z-40">
+    <div class="flex items-center gap-4">
+      <a class="text-[#5F7A76] dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-900 rounded-full w-10 h-10 flex items-center justify-center transition-colors" href="./sayfa3.html" aria-label="Ayarlar">
+        <span class="material-symbols-outlined">menu</span>
+      </a>
+    </div>
+    <div class="font-serif italic text-2xl tracking-tight text-[#5F7A76] text-center flex-grow">
+      Çalışma Günlüğü
+    </div>
+    <div class="flex items-center gap-4">
+      <div class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center text-[#5F7A76] overflow-hidden">
+        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">school</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow w-full max-w-[960px] mx-auto px-gutter py-lg pb-32 flex flex-col gap-lg">
+    <section class="flex flex-col gap-sm lg:flex-row lg:items-end lg:justify-between">
+      <div>
+        <p class="font-label-sm text-label-sm uppercase tracking-[0.2em] text-[#5F7A76]" id="planner-date-label">Bugün</p>
+        <h1 class="font-h1 text-h1 text-on-surface mb-xs">Günlük Planlayıcı</h1>
+        <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">
+          Bugün gerçekten yapman gerekenleri takip et. Görev ekle, tamamlandıkça işaretle ve çalışma notlarını tek yerde tut.
+        </p>
+      </div>
+      <div class="flex items-center gap-sm">
+        <a class="inline-flex items-center gap-2 rounded-full border border-outline-variant px-5 py-3 text-on-surface hover:bg-surface-container-low transition-colors" href="./sayfa3.html">
+          <span class="material-symbols-outlined text-[18px]">import_contacts</span>
+          Defter Stili
+        </a>
+        <a class="inline-flex items-center gap-2 rounded-full bg-primary text-on-primary px-5 py-3 shadow-sm hover:bg-primary-container hover:text-on-primary-container transition-colors" href="./sayfa2.html">
+          <span class="material-symbols-outlined text-[18px]">add</span>
+          Yeni Görev
+        </a>
+      </div>
+    </section>
+
+    <div class="feedback-message hidden" id="flash-message" role="status" aria-live="polite"></div>
+
+    <section class="grid gap-md md:grid-cols-3">
+      <article class="paper-card rounded-xl border border-outline-variant p-md">
+        <p class="font-label-sm text-label-sm uppercase tracking-[0.18em] text-on-surface-variant">Toplam Görev</p>
+        <div class="mt-sm flex items-end justify-between">
+          <strong class="font-h2 text-h2 text-on-surface" id="task-total">0</strong>
+          <span class="text-on-surface-variant">görev</span>
+        </div>
+      </article>
+      <article class="paper-card rounded-xl border border-outline-variant p-md">
+        <p class="font-label-sm text-label-sm uppercase tracking-[0.18em] text-on-surface-variant">Tamamlanan</p>
+        <div class="mt-sm flex items-end justify-between">
+          <strong class="font-h2 text-h2 text-on-surface" id="task-completed">0</strong>
+          <span class="text-on-surface-variant">işaretli</span>
+        </div>
+      </article>
+      <article class="paper-card rounded-xl border border-outline-variant p-md">
+        <div class="flex items-center justify-between gap-sm">
+          <div>
+            <p class="font-label-sm text-label-sm uppercase tracking-[0.18em] text-on-surface-variant">İlerleme</p>
+            <strong class="font-h2 text-h2 text-on-surface" id="task-percent">0%</strong>
+          </div>
+          <span class="style-chip" id="notebook-style-chip">Çizgili</span>
+        </div>
+        <div class="progress-track mt-sm">
+          <div class="progress-fill" id="progress-bar"></div>
+        </div>
+      </article>
+    </section>
+
+    <section class="grid gap-md xl:grid-cols-[minmax(0,1.65fr)_minmax(300px,0.95fr)]">
+      <article class="paper-card rounded-xl border border-outline-variant overflow-hidden">
+        <div class="flex flex-wrap items-center justify-between gap-sm border-b border-outline-variant px-md py-sm">
+          <div>
+            <p class="font-label-sm text-label-sm uppercase tracking-[0.18em] text-on-surface-variant">Bugünün Görevleri</p>
+            <h2 class="font-h3 text-h3 text-on-surface">Görev Defteri</h2>
+          </div>
+          <div class="text-right">
+            <p class="font-label-sm text-label-sm uppercase tracking-[0.18em] text-on-surface-variant">Geçerli Stil</p>
+            <p class="text-on-surface" id="notebook-style-label">Çizgili Sayfa</p>
+            <button class="notebook-quick-action mt-3" id="open-drawing-mode" type="button">
+              <span class="material-symbols-outlined text-[16px]">draw</span>
+              El Yazısı Modu
+            </button>
+          </div>
+        </div>
+        <div class="notebook-surface notebook-lined min-h-[420px] p-md md:p-lg" id="notebook-surface">
+          <div class="relative z-10 flex flex-col gap-md notebook-task-list" id="task-list"></div>
+        </div>
+      </article>
+
+      <aside class="flex flex-col gap-md">
+        <article class="paper-card rounded-xl border border-outline-variant p-md">
+          <p class="font-label-sm text-label-sm uppercase tracking-[0.18em] text-on-surface-variant">Bugünün Odağı</p>
+          <label class="mt-sm block">
+            <span class="sr-only">Bugünün Odağı</span>
+            <input class="journal-input" id="today-focus" maxlength="120" placeholder="Bugün en çok neye odaklanman gerekiyor?" type="text"/>
+          </label>
+          <p class="mt-sm text-sm text-on-surface-variant">
+            Bu satırı kısa tut; defter başlığı gibi dursun.
+          </p>
+        </article>
+
+        <article class="paper-card rounded-xl border border-outline-variant p-md">
+          <div class="flex items-center justify-between gap-sm">
+            <div>
+              <p class="font-label-sm text-label-sm uppercase tracking-[0.18em] text-on-surface-variant">Notlar</p>
+              <h2 class="font-h3 text-h3 text-on-surface">Kenar Notları</h2>
+            </div>
+            <span class="material-symbols-outlined text-[#5F7A76]">edit_note</span>
+          </div>
+          <label class="mt-sm block">
+            <span class="sr-only">Günlük Notlar</span>
+            <textarea class="journal-textarea" id="daily-notes" placeholder="Hatırlatmaları, eksik noktaları veya sonra tekrar bakacaklarını yaz." rows="8"></textarea>
+          </label>
+        </article>
+      </aside>
+    </section>
+  </main>
+
+  <nav class="bg-[#F9F9F7] dark:bg-stone-900 border-t border-stone-200 dark:border-stone-800 shadow-[0_-4px_20px_rgba(0,0,0,0.03)] fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 h-20 pb-safe md:hidden rounded-t-lg">
+    <a class="nav-link flex flex-col items-center justify-center scale-95 active:scale-90 transition-transform w-[88px]" data-active="true" href="./sayfa1.html">
+      <span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">event_note</span>
+      <span class="font-serif text-[11px] uppercase tracking-wider">Planlayıcı</span>
+    </a>
+    <a class="nav-link flex flex-col items-center justify-center scale-95 active:scale-90 transition-transform w-[88px]" data-active="false" href="./sayfa2.html">
+      <span class="material-symbols-outlined mb-1">add_circle</span>
+      <span class="font-serif text-[11px] uppercase tracking-wider">Yeni Görev</span>
+    </a>
+    <a class="nav-link flex flex-col items-center justify-center scale-95 active:scale-90 transition-transform w-[88px]" data-active="false" href="./sayfa3.html">
+      <span class="material-symbols-outlined mb-1">settings</span>
+      <span class="font-serif text-[11px] uppercase tracking-wider">Ayarlar</span>
+    </a>
+  </nav>
+
+  <section class="drawing-overlay" id="drawing-overlay" aria-hidden="true">
+    <div class="drawing-shell">
+      <header class="drawing-header">
+        <div>
+          <p class="font-label-sm text-label-sm uppercase tracking-[0.18em] text-on-surface-variant">Tam Ekran Defter</p>
+          <h2 class="font-h3 text-h3 text-on-surface">El Yazısı Alanı</h2>
+        </div>
+        <div class="drawing-header-actions">
+          <button class="drawing-action" id="clear-drawing" type="button">
+            <span class="material-symbols-outlined text-[18px]">ink_eraser</span>
+            Temizle
+          </button>
+          <button class="drawing-action drawing-action--primary" id="close-drawing-mode" type="button">
+            <span class="material-symbols-outlined text-[18px]">menu_book</span>
+            Defteri Kapat
+          </button>
+        </div>
+      </header>
+      <div class="drawing-surface-wrap">
+        <div class="drawing-paper notebook-surface notebook-lined" id="drawing-paper">
+          <div class="drawing-hint" id="drawing-hint">
+            Kalem, parmak veya mouse ile doğrudan bu sayfaya yazabilirsin. Çizimler otomatik kaydedilir.
+          </div>
+          <canvas class="drawing-canvas" id="drawing-canvas"></canvas>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script defer src="./storage.js"></script>
+  <script defer src="./ui.js"></script>
+  <script defer src="./app.js"></script>
+</body>
+</html>
