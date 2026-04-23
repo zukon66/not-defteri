@@ -2,6 +2,14 @@
   var storage = window.StudyJournalStorage;
   var ui = window.StudyJournalUI;
 
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("./sw.js").catch(function () {
+        return null;
+      });
+    });
+  }
+
   if (!storage || !ui) {
     return;
   }

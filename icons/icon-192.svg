@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" role="img" aria-label="Çalışma Günlüğü">
+  <rect width="192" height="192" rx="44" fill="#f4f4f1"/>
+  <rect x="28" y="22" width="136" height="148" rx="20" fill="#fbf9f8" stroke="#c1c8c6" stroke-width="4"/>
+  <line x1="60" y1="22" x2="60" y2="170" stroke="#ba1a1a" stroke-opacity="0.25" stroke-width="3"/>
+  <line x1="40" y1="58" x2="152" y2="58" stroke="#b6c9d7" stroke-width="3"/>
+  <line x1="40" y1="82" x2="152" y2="82" stroke="#b6c9d7" stroke-width="3"/>
+  <line x1="40" y1="106" x2="152" y2="106" stroke="#b6c9d7" stroke-width="3"/>
+  <line x1="40" y1="130" x2="152" y2="130" stroke="#b6c9d7" stroke-width="3"/>
+  <path d="M104 142c10-2 18-10 21-20 7 7 11 15 11 24 0 8-6 14-14 14-10 0-16-7-18-18z" fill="#47615d"/>
+  <path d="M104 142c2-10 7-19 16-25l5 5c-3 8-10 15-21 20z" fill="#7b542b"/>
+</svg>
