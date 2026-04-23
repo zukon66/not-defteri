@@ -271,6 +271,58 @@
     </div>
   </section>
 
+  <section class="modal-overlay" id="edit-task-modal" aria-hidden="true">
+    <div class="modal-card paper-card">
+      <div class="border-b border-outline-variant px-md py-sm">
+        <p class="font-label-sm text-label-sm uppercase tracking-[0.18em] text-on-surface-variant">Görev Düzenle</p>
+        <h2 class="font-h3 text-h3 text-on-surface">Görev Detaylarını Güncelle</h2>
+      </div>
+      <form class="notebook-surface notebook-lined p-md md:p-lg" id="edit-task-form" novalidate>
+        <input id="edit-task-id" type="hidden"/>
+        <div class="relative z-10 grid gap-md">
+          <label class="block">
+            <span class="font-label-sm text-label-sm uppercase tracking-[0.18em] text-on-surface-variant">Ders</span>
+            <input class="journal-input" id="edit-subject" maxlength="80" placeholder="Matematik, Biyoloji, Edebiyat..." type="text"/>
+          </label>
+
+          <label class="block">
+            <span class="font-label-sm text-label-sm uppercase tracking-[0.18em] text-on-surface-variant">Konu</span>
+            <input class="journal-input" id="edit-topic" maxlength="120" placeholder="Tam olarak ne çalışacaksın?" type="text"/>
+          </label>
+
+          <div class="grid gap-md md:grid-cols-2">
+            <label class="block">
+              <span class="font-label-sm text-label-sm uppercase tracking-[0.18em] text-on-surface-variant">Sayfalar</span>
+              <input class="journal-input" id="edit-pages" maxlength="40" placeholder="örn. 42-57" type="text"/>
+            </label>
+
+            <label class="block">
+              <span class="font-label-sm text-label-sm uppercase tracking-[0.18em] text-on-surface-variant">Tahmini Süre</span>
+              <input class="journal-input" id="edit-estimated-time" maxlength="40" placeholder="örn. 45 dk" type="text"/>
+            </label>
+          </div>
+
+          <label class="block">
+            <span class="font-label-sm text-label-sm uppercase tracking-[0.18em] text-on-surface-variant">Notlar</span>
+            <textarea class="journal-textarea min-h-[140px]" id="edit-notes" maxlength="320" placeholder="İstersen hatırlatma, formül, eksik nokta veya kısa not ekle." rows="6"></textarea>
+          </label>
+
+          <div class="feedback-message hidden" id="edit-task-message" role="alert" aria-live="polite"></div>
+
+          <div class="flex flex-wrap items-center justify-end gap-sm pt-sm">
+            <button class="inline-flex items-center justify-center rounded-full border border-outline-variant px-5 py-3 text-on-surface hover:bg-surface-container-low transition-colors" id="cancel-edit-task" type="button">
+              İptal
+            </button>
+            <button class="inline-flex items-center justify-center gap-2 rounded-full bg-primary text-on-primary px-6 py-3 shadow-sm hover:bg-primary-container hover:text-on-primary-container transition-colors" type="submit">
+              <span class="material-symbols-outlined text-[18px]">save</span>
+              Kaydet
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+
   <script defer src="./storage.js"></script>
   <script defer src="./ui.js"></script>
   <script defer src="./app.js"></script>

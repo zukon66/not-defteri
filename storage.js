@@ -175,6 +175,15 @@
     return tasks;
   }
 
+  function deleteTask(taskId) {
+    var tasks = readTasks().filter(function (task) {
+      return task.id !== taskId;
+    });
+
+    writeTasks(tasks);
+    return tasks;
+  }
+
   function getProgress(tasks) {
     var total = tasks.length;
     var completed = tasks.filter(function (task) {
@@ -207,6 +216,7 @@
     getJournal: readJournal,
     getProgress: getProgress,
     getTasks: readTasks,
+    deleteTask: deleteTask,
     parseEstimatedTimeToSeconds: parseEstimatedTimeToSeconds,
     setFlashMessage: setFlashMessage,
     updateTask: updateTask,

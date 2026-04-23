@@ -36,6 +36,16 @@
     var openDrawingModeButton = document.getElementById("open-drawing-mode");
     var closeDrawingModeButton = document.getElementById("close-drawing-mode");
     var clearDrawingButton = document.getElementById("clear-drawing");
+    var editTaskModal = document.getElementById("edit-task-modal");
+    var editTaskForm = document.getElementById("edit-task-form");
+    var editTaskMessage = document.getElementById("edit-task-message");
+    var editTaskIdInput = document.getElementById("edit-task-id");
+    var editSubjectInput = document.getElementById("edit-subject");
+    var editTopicInput = document.getElementById("edit-topic");
+    var editPagesInput = document.getElementById("edit-pages");
+    var editEstimatedTimeInput = document.getElementById("edit-estimated-time");
+    var editNotesInput = document.getElementById("edit-notes");
+    var cancelEditTaskButton = document.getElementById("cancel-edit-task");
     var canvasContext = drawingCanvas ? drawingCanvas.getContext("2d") : null;
     var isDrawing = false;
     var lastPoint = null;
@@ -359,6 +369,26 @@
       document.body.classList.remove("overlay-open");
     }
 
+    function openEditTaskModal(task) {
+      editTaskIdInput.value = task.id;
+      editSubjectInput.value = task.subject || "";
+      editTopicInput.value = task.topic || "";
+      editPagesInput.value = task.pages || "";
+      editEstimatedTimeInput.value = task.estimatedTime || "";
+      editNotesInput.value = task.notes || "";
+      ui.setFeedbackMessage(editTaskMessage, "", "success");
+      editTaskModal.classList.add("is-open");
+      editTaskModal.setAttribute("aria-hidden", "false");
+      document.body.classList.add("overlay-open");
+    }
+
+    function closeEditTaskModal() {
+      editTaskModal.classList.remove("is-open");
+      editTaskModal.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("overlay-open");
+      ui.setFeedbackMessage(editTaskMessage, "", "success");
+    }
+
     plannerDateLabel.textContent = formatToday();
 
     var flash = storage.consumeFlashMessage();
@@ -381,6 +411,35 @@
     });
 
     taskList.addEventListener("click", function (event) {
+      var taskActionButton = event.target.closest("[data-task-action]");
+      if (taskActionButton) {
+        var actionTaskItem = taskActionButton.closest("[data-task-id]");
+        var actionTaskId = actionTaskItem ? actionTaskItem.dataset.taskId : "";
+        var actionTask = storage.getTasks().find(function (task) {
+          return task.id === actionTaskId;
+        });
+
+        if (!actionTask) {
+          return;
+        }
+
+        if (taskActionButton.dataset.taskAction === "edit") {
+          openEditTaskModal(actionTask);
+          return;
+        }
+
+        if (taskActionButton.dataset.taskAction === "delete") {
+          if (!window.confirm("Bu görevi silmek istediğine emin misin?")) {
+            return;
+          }
+
+          storage.deleteTask(actionTask.id);
+          ui.setFeedbackMessage(flashMessage, "Görev silindi.", "success");
+          render();
+          return;
+        }
+      }
+
       var actionButton = event.target.closest("[data-timer-action]");
       if (!actionButton) {
         return;
@@ -450,9 +509,75 @@
       });
     }
 
+    if (cancelEditTaskButton) {
+      cancelEditTaskButton.addEventListener("click", closeEditTaskModal);
+    }
+
+    if (editTaskModal) {
+      editTaskModal.addEventListener("click", function (event) {
+        if (event.target === editTaskModal) {
+          closeEditTaskModal();
+        }
+      });
+    }
+
+    if (editTaskForm) {
+      editTaskForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        var taskId = editTaskIdInput.value;
+        var subject = editSubjectInput.value.trim();
+        var topic = editTopicInput.value.trim();
+        var pages = editPagesInput.value.trim();
+        var estimatedTime = editEstimatedTimeInput.value.trim();
+        var notes = editNotesInput.value.trim();
+        var estimatedDurationSeconds = storage.parseEstimatedTimeToSeconds(estimatedTime);
+        var existingTask = storage.getTasks().find(function (task) {
+          return task.id === taskId;
+        });
+
+        if (!existingTask) {
+          ui.setFeedbackMessage(editTaskMessage, "Görev bulunamadı.", "error");
+          return;
+        }
+
+        if (!subject || !topic || !estimatedTime) {
+          ui.setFeedbackMessage(editTaskMessage, "Ders, konu ve tahmini süre alanları zorunludur.", "error");
+          return;
+        }
+
+        if (!estimatedDurationSeconds) {
+          ui.setFeedbackMessage(editTaskMessage, "Tahmini süreyi “45 dk” veya “1 saat 20 dk” gibi gir.", "error");
+          return;
+        }
+
+        storage.updateTask(taskId, {
+          subject: subject,
+          topic: topic,
+          pages: pages,
+          estimatedTime: estimatedTime,
+          estimatedDurationSeconds: estimatedDurationSeconds,
+          remainingSeconds: estimatedDurationSeconds,
+          timerRunning: false,
+          timerEndsAt: null,
+          timerFinished: false,
+          notes: notes,
+          completed: existingTask.completed
+        });
+
+        closeEditTaskModal();
+        ui.setFeedbackMessage(flashMessage, "Görev güncellendi.", "success");
+        render();
+      });
+    }
+
     document.addEventListener("keydown", function (event) {
       if (event.key === "Escape" && drawingOverlay.classList.contains("is-open")) {
         closeDrawingMode();
+      }
+
+      if (event.key === "Escape" && editTaskModal.classList.contains("is-open")) {
+        closeEditTaskModal();
       }
     });
 
