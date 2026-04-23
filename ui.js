@@ -26,7 +26,24 @@
       .replace(/'/g, "&#39;");
   }
 
-  function renderTasks(container, tasks) {
+  function formatDuration(totalSeconds) {
+    var safeSeconds = Math.max(0, Number(totalSeconds) || 0);
+    var hours = Math.floor(safeSeconds / 3600);
+    var minutes = Math.floor((safeSeconds % 3600) / 60);
+    var seconds = safeSeconds % 60;
+
+    if (hours > 0) {
+      return [hours, minutes, seconds].map(function (part, index) {
+        return index === 0 ? String(part) : String(part).padStart(2, "0");
+      }).join(":");
+    }
+
+    return [minutes, seconds].map(function (part) {
+      return String(part).padStart(2, "0");
+    }).join(":");
+  }
+
+  function renderTasks(container, tasks, now) {
     if (!container) {
       return;
     }
@@ -45,13 +62,24 @@
 
     container.innerHTML = tasks.map(function (task) {
       var metaParts = [];
+      var currentRemainingSeconds = Number(task.remainingSeconds) || 0;
+      var hasTimer = Number(task.estimatedDurationSeconds) > 0;
+      var isRunning = Boolean(task.timerRunning && task.timerEndsAt);
+
+      if (isRunning) {
+        currentRemainingSeconds = Math.max(0, Math.ceil((new Date(task.timerEndsAt).getTime() - now) / 1000));
+      }
 
       if (task.pages) {
         metaParts.push("Sayfa " + escapeHtml(task.pages));
       }
 
-      if (task.estimatedTime) {
+      if (task.estimatedTime && !hasTimer) {
         metaParts.push(escapeHtml(task.estimatedTime));
+      }
+
+      if (hasTimer) {
+        metaParts.push("Süre " + escapeHtml(task.estimatedTime));
       }
 
       return [
@@ -64,6 +92,19 @@
         '    </div>',
         '    <h3 class="task-title mt-1 font-h3 text-[26px] leading-[1.2] text-on-surface">' + escapeHtml(task.topic) + '</h3>',
         (task.notes ? '    <p class="task-notes mt-2 text-on-surface-variant">' + escapeHtml(task.notes) + '</p>' : ""),
+        (hasTimer ? [
+        '    <div class="timer-panel mt-3">',
+        '      <div class="timer-readout-wrap">',
+        '        <span class="timer-label">Geri Sayım</span>',
+        '        <strong class="timer-readout' + (task.timerFinished ? " is-finished" : "") + '">' + escapeHtml(formatDuration(currentRemainingSeconds)) + '</strong>',
+        (task.timerFinished ? '        <span class="timer-finished-text">Süre doldu</span>' : ""),
+        '      </div>',
+        '      <div class="timer-actions">',
+        '        <button class="timer-action timer-action--primary" data-timer-action="' + (isRunning ? "pause" : "start") + '" type="button">' + (isRunning ? "Duraklat" : (task.timerFinished ? "Yeniden Başlat" : "Başlat")) + '</button>',
+        '        <button class="timer-action" data-timer-action="reset" type="button">Sıfırla</button>',
+        '      </div>',
+        '    </div>'
+        ].join("") : ""),
         '  </div>',
         '</article>'
       ].join("");

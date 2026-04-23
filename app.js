@@ -39,13 +39,72 @@
     var canvasContext = drawingCanvas ? drawingCanvas.getContext("2d") : null;
     var isDrawing = false;
     var lastPoint = null;
+    var timerIntervalId = null;
+    var audioContext = null;
+    var activeAlertTaskIds = {};
+
+    function ensureAudioContext() {
+      var AudioContextClass = window.AudioContext || window.webkitAudioContext;
+
+      if (!AudioContextClass) {
+        return null;
+      }
+
+      if (!audioContext) {
+        audioContext = new AudioContextClass();
+      }
+
+      if (audioContext.state === "suspended") {
+        audioContext.resume();
+      }
+
+      return audioContext;
+    }
+
+    function playTimerAlert() {
+      var context = ensureAudioContext();
+
+      if (navigator.vibrate) {
+        navigator.vibrate([220, 120, 220, 120, 360]);
+      }
+
+      if (!context) {
+        return;
+      }
+
+      [0, 0.22, 0.44].forEach(function (offset, index) {
+        var oscillator = context.createOscillator();
+        var gainNode = context.createGain();
+        var startAt = context.currentTime + offset;
+        var duration = index === 2 ? 0.36 : 0.18;
+
+        oscillator.type = "sine";
+        oscillator.frequency.setValueAtTime(index === 2 ? 1046 : 880, startAt);
+        gainNode.gain.setValueAtTime(0.0001, startAt);
+        gainNode.gain.exponentialRampToValueAtTime(0.18, startAt + 0.02);
+        gainNode.gain.exponentialRampToValueAtTime(0.0001, startAt + duration);
+        oscillator.connect(gainNode);
+        gainNode.connect(context.destination);
+        oscillator.start(startAt);
+        oscillator.stop(startAt + duration);
+      });
+    }
+
+    function getRemainingSeconds(task, now) {
+      if (task.timerRunning && task.timerEndsAt) {
+        return Math.max(0, Math.ceil((new Date(task.timerEndsAt).getTime() - now) / 1000));
+      }
+
+      return Number(task.remainingSeconds) || 0;
+    }
 
     function render() {
       var tasks = storage.getTasks();
       var journal = storage.getJournal();
       var progress = storage.getProgress(tasks);
+      var now = Date.now();
 
-      ui.renderTasks(taskList, tasks);
+      ui.renderTasks(taskList, tasks, now);
       totalElement.textContent = String(progress.total);
       completedElement.textContent = String(progress.completed);
       percentElement.textContent = progress.percentage + "%";
@@ -62,6 +121,121 @@
       if (notesInput.value !== journal.notes) {
         notesInput.value = journal.notes;
       }
+    }
+
+    function syncExpiredTimers() {
+      var tasks = storage.getTasks();
+      var now = Date.now();
+      var expiredTasks = tasks.filter(function (task) {
+        return task.timerRunning && task.timerEndsAt && new Date(task.timerEndsAt).getTime() <= now;
+      });
+
+      if (!expiredTasks.length) {
+        return false;
+      }
+
+      expiredTasks.forEach(function (task) {
+        storage.updateTask(task.id, {
+          remainingSeconds: 0,
+          timerRunning: false,
+          timerEndsAt: null,
+          timerFinished: true
+        });
+
+        if (!activeAlertTaskIds[task.id]) {
+          activeAlertTaskIds[task.id] = true;
+          playTimerAlert();
+          ui.setFeedbackMessage(flashMessage, "“" + task.topic + "” için süre doldu.", "success");
+        }
+      });
+
+      return true;
+    }
+
+    function startTimerLoop() {
+      if (timerIntervalId) {
+        return;
+      }
+
+      timerIntervalId = window.setInterval(function () {
+        var didExpire = syncExpiredTimers();
+        render();
+
+        if (didExpire) {
+          return;
+        }
+
+        var hasRunningTimer = storage.getTasks().some(function (task) {
+          return task.timerRunning && task.timerEndsAt;
+        });
+
+        if (!hasRunningTimer) {
+          clearInterval(timerIntervalId);
+          timerIntervalId = null;
+        }
+      }, 1000);
+    }
+
+    function beginTaskTimer(taskId) {
+      var tasks = storage.getTasks();
+      var task = tasks.find(function (item) {
+        return item.id === taskId;
+      });
+
+      if (!task || !task.estimatedDurationSeconds) {
+        return;
+      }
+
+      ensureAudioContext();
+      activeAlertTaskIds[taskId] = false;
+
+      var baseRemaining = getRemainingSeconds(task, Date.now()) || task.estimatedDurationSeconds;
+      storage.updateTask(taskId, {
+        remainingSeconds: baseRemaining,
+        timerRunning: true,
+        timerFinished: false,
+        timerEndsAt: new Date(Date.now() + (baseRemaining * 1000)).toISOString()
+      });
+      startTimerLoop();
+      render();
+    }
+
+    function pauseTaskTimer(taskId) {
+      var tasks = storage.getTasks();
+      var task = tasks.find(function (item) {
+        return item.id === taskId;
+      });
+
+      if (!task) {
+        return;
+      }
+
+      storage.updateTask(taskId, {
+        remainingSeconds: getRemainingSeconds(task, Date.now()),
+        timerRunning: false,
+        timerEndsAt: null
+      });
+      render();
+    }
+
+    function resetTaskTimer(taskId) {
+      var tasks = storage.getTasks();
+      var task = tasks.find(function (item) {
+        return item.id === taskId;
+      });
+
+      if (!task) {
+        return;
+      }
+
+      activeAlertTaskIds[taskId] = false;
+      storage.updateTask(taskId, {
+        remainingSeconds: task.estimatedDurationSeconds || 0,
+        timerRunning: false,
+        timerEndsAt: null,
+        timerFinished: false
+      });
+      render();
     }
 
     function getStoredDrawing() {
@@ -206,6 +380,33 @@
       render();
     });
 
+    taskList.addEventListener("click", function (event) {
+      var actionButton = event.target.closest("[data-timer-action]");
+      if (!actionButton) {
+        return;
+      }
+
+      var taskItem = actionButton.closest("[data-task-id]");
+      if (!taskItem) {
+        return;
+      }
+
+      var taskId = taskItem.dataset.taskId;
+      var action = actionButton.dataset.timerAction;
+
+      if (action === "start") {
+        beginTaskTimer(taskId);
+      }
+
+      if (action === "pause") {
+        pauseTaskTimer(taskId);
+      }
+
+      if (action === "reset") {
+        resetTaskTimer(taskId);
+      }
+    });
+
     focusInput.addEventListener("input", function (event) {
       storage.updateJournal({ focus: event.target.value.trimStart() });
     });
@@ -236,10 +437,10 @@
     }
 
     if (clearDrawingButton) {
-        clearDrawingButton.addEventListener("click", function () {
-          if (!canvasContext || !drawingCanvas) {
-            return;
-          }
+      clearDrawingButton.addEventListener("click", function () {
+        if (!canvasContext || !drawingCanvas) {
+          return;
+        }
 
         canvasContext.clearRect(0, 0, drawingCanvas.clientWidth, drawingCanvas.clientHeight);
         storage.updateJournal({ handwritingData: "" });
@@ -254,6 +455,10 @@
         closeDrawingMode();
       }
     });
+
+    if (storage.getTasks().some(function (task) { return task.timerRunning && task.timerEndsAt; })) {
+      startTimerLoop();
+    }
 
     render();
   }
@@ -271,9 +476,15 @@
       var pages = String(formData.get("pages") || "").trim();
       var estimatedTime = String(formData.get("estimatedTime") || "").trim();
       var notes = String(formData.get("notes") || "").trim();
+      var estimatedDurationSeconds = storage.parseEstimatedTimeToSeconds(estimatedTime);
 
       if (!subject || !topic || !estimatedTime) {
         ui.setFeedbackMessage(formMessage, "Ders, konu ve tahmini süre alanları zorunludur.", "error");
+        return;
+      }
+
+      if (!estimatedDurationSeconds) {
+        ui.setFeedbackMessage(formMessage, "Tahmini süreyi “45 dk” veya “1 saat 20 dk” gibi gir.", "error");
         return;
       }
 

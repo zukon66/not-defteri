@@ -8,6 +8,78 @@
     handwritingData: ""
   };
 
+  function parseEstimatedTimeToSeconds(value) {
+    var input = String(value || "").trim().toLowerCase();
+
+    if (!input) {
+      return 0;
+    }
+
+    var totalSeconds = 0;
+    var matchedAny = false;
+    var hourMatches = input.match(/(\d+)\s*(saat|sa|hour|hours|h)\b/g) || [];
+    var minuteMatches = input.match(/(\d+)\s*(dakika|dk|dak|minute|minutes|min)\b/g) || [];
+    var secondMatches = input.match(/(\d+)\s*(saniye|sn|sec|second|seconds|s)\b/g) || [];
+    var colonMatch = input.match(/^(\d{1,2})[:.](\d{1,2})(?:[:.](\d{1,2}))?$/);
+
+    if (colonMatch) {
+      matchedAny = true;
+      totalSeconds += Number(colonMatch[1]) * 60 * 60;
+      totalSeconds += Number(colonMatch[2]) * 60;
+      totalSeconds += Number(colonMatch[3] || 0);
+    }
+
+    hourMatches.forEach(function (item) {
+      var valueMatch = item.match(/\d+/);
+      if (!valueMatch) {
+        return;
+      }
+      matchedAny = true;
+      totalSeconds += Number(valueMatch[0]) * 60 * 60;
+    });
+
+    minuteMatches.forEach(function (item) {
+      var valueMatch = item.match(/\d+/);
+      if (!valueMatch) {
+        return;
+      }
+      matchedAny = true;
+      totalSeconds += Number(valueMatch[0]) * 60;
+    });
+
+    secondMatches.forEach(function (item) {
+      var valueMatch = item.match(/\d+/);
+      if (!valueMatch) {
+        return;
+      }
+      matchedAny = true;
+      totalSeconds += Number(valueMatch[0]);
+    });
+
+    if (!matchedAny && /^\d+$/.test(input)) {
+      totalSeconds = Number(input) * 60;
+    }
+
+    return totalSeconds;
+  }
+
+  function normalizeTask(task) {
+    var parsedDuration = Number(task.estimatedDurationSeconds) || parseEstimatedTimeToSeconds(task.estimatedTime);
+    var remainingSeconds = Number(task.remainingSeconds);
+
+    if (!remainingSeconds && parsedDuration) {
+      remainingSeconds = parsedDuration;
+    }
+
+    return Object.assign({}, task, {
+      estimatedDurationSeconds: parsedDuration,
+      remainingSeconds: remainingSeconds || 0,
+      timerRunning: Boolean(task.timerRunning && task.timerEndsAt),
+      timerEndsAt: task.timerEndsAt || null,
+      timerFinished: Boolean(task.timerFinished)
+    });
+  }
+
   function safeParse(value, fallback) {
     if (!value) {
       return fallback;
@@ -22,7 +94,7 @@
 
   function readTasks() {
     var tasks = safeParse(localStorage.getItem(TASKS_KEY), []);
-    return Array.isArray(tasks) ? tasks : [];
+    return Array.isArray(tasks) ? tasks.map(normalizeTask) : [];
   }
 
   function writeTasks(tasks) {
@@ -51,12 +123,18 @@
 
   function addTask(taskInput) {
     var tasks = readTasks();
+    var estimatedDurationSeconds = parseEstimatedTimeToSeconds(taskInput.estimatedTime);
     var task = {
       id: createId(),
       subject: taskInput.subject,
       topic: taskInput.topic,
       pages: taskInput.pages || "",
       estimatedTime: taskInput.estimatedTime,
+      estimatedDurationSeconds: estimatedDurationSeconds,
+      remainingSeconds: estimatedDurationSeconds,
+      timerRunning: false,
+      timerEndsAt: null,
+      timerFinished: false,
       notes: taskInput.notes || "",
       completed: false,
       createdAt: new Date().toISOString()
@@ -74,8 +152,23 @@
       }
 
       return Object.assign({}, task, {
-        completed: !task.completed
+        completed: !task.completed,
+        timerRunning: false,
+        timerEndsAt: null
       });
+    });
+
+    writeTasks(tasks);
+    return tasks;
+  }
+
+  function updateTask(taskId, patch) {
+    var tasks = readTasks().map(function (task) {
+      if (task.id !== taskId) {
+        return task;
+      }
+
+      return Object.assign({}, task, patch || {});
     });
 
     writeTasks(tasks);
@@ -114,7 +207,9 @@
     getJournal: readJournal,
     getProgress: getProgress,
     getTasks: readTasks,
+    parseEstimatedTimeToSeconds: parseEstimatedTimeToSeconds,
     setFlashMessage: setFlashMessage,
+    updateTask: updateTask,
     updateJournal: writeJournal,
     toggleTask: toggleTask
   };
